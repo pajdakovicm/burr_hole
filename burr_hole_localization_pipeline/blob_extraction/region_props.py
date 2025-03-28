@@ -233,7 +233,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--csv_filename",
         required=True,
-        help="Name of the CSV file to store region properties.",
+        help="Path to the CSV file to store region properties information.",
     )
     parser.add_argument(
         "--aspect_ratio_max_min",
