@@ -121,12 +121,8 @@ def process_dataset(input_dir, output_dir, min_clip=-200, max_clip=1000):
             preop_clipped = clip_ct(preop_np, min=min_clip, max=max_clip)
             postop_clipped = clip_ct(postop_np, min=min_clip, max=max_clip)
 
-            preop_filename = (
-                f"{extract_prefix(os.path.basename(preop_data))}_preop_clipped"
-            )
-            postop_filename = (
-                f"{extract_prefix(os.path.basename(postop_data))}_postop_clipped"
-            )
+            preop_filename = f"{extract_prefix(os.path.basename(preop_data))}_preop"
+            postop_filename = f"{extract_prefix(os.path.basename(postop_data))}_postop"
 
             save_nifty(
                 preop_clipped, os.path.join(output_dir, preop_filename), preop_ct.affine
