@@ -6,6 +6,98 @@ import csv
 import argparse
 import matplotlib.pyplot as plt
 
+import os
+import numpy as np
+import csv
+import SimpleITK as sitk
+from scipy.ndimage import center_of_mass
+
+
+def calculate_euclidean_distance(pred_label, gt_label, voxel_size):
+    """
+    This function calculates the center of mass for both the predicted and ground truth labels,
+    computes the Euclidean distance in voxel space, and then converts it to millimeters using
+    the provided voxel size.
+    Args:
+        pred_label (numpy.ndarray): Binary numpy array representing the predicted label.
+        gt_label (numpy.ndarray): Binary numpy array representing the ground truth label.
+        voxel_size (tuple of float): Voxel size in millimeters, given as (x, y, z) dimensions.
+
+    Returns:
+        float: The Euclidean distance between the two centers of mass.
+    """
+    try:
+        pred_center = center_of_mass(pred_label)
+        gt_center = center_of_mass(gt_label)
+
+        if any(np.isnan(pred_center)) or any(np.isnan(gt_center)):
+            print("Warning: NaN detected during calculation of center.")
+            return float("nan")
+
+        distance_voxels = np.linalg.norm(np.array(pred_center) - np.array(gt_center))
+        distance_mm = distance_voxels * np.array(voxel_size)
+
+        total_distance_mm = np.sqrt(np.sum(np.square(distance_mm)))
+
+        return total_distance_mm
+    except Exception as e:
+        print(f"Error calculating Euclidean distance: {e}")
+        return float("nan")
+
+
+def compute_distance_error_over_dataset(gt_dir, pred_dir, output_csv):
+    """
+    Computes the Euclidean distance error for all NIfTI images in a dataset.
+    Args:
+        gt_dir (str): Directory containing ground truth NIfTI files.
+        pred_dir (str): Directory containing predicted NIfTI files.
+        output_csv (str): Name of the output CSV file storing distance errors.
+    Returns:
+        list, float, float: List of errors, mean error, and standard deviation.
+    """
+    errors_list = []
+    results = []
+
+    for gt_file in os.listdir(gt_dir):
+        if gt_file.endswith(".nii.gz"):
+            try:
+                gt_path = os.path.join(gt_dir, gt_file)
+                prefix_number = extract_prefix(os.path.basename(gt_path))
+                pred_file = f"{prefix_number}_label.nii.gz"
+                pred_path = os.path.join(pred_dir, pred_file)
+
+                if os.path.exists(pred_path):
+                    gt_image = sitk.ReadImage(gt_path)
+                    pred_image = sitk.ReadImage(pred_path)
+                    voxel_size = gt_image.GetSpacing()
+
+                    gt_array = sitk.GetArrayFromImage(gt_image) > 0
+                    pred_array = sitk.GetArrayFromImage(pred_image) > 0
+
+                    error = calculate_euclidean_distance(
+                        gt_array, pred_array, voxel_size
+                    )
+
+                    if not np.isnan(error):
+                        errors_list.append(error)
+                        results.append([gt_file, error])
+                    else:
+                        print(f"Warning: NaN error for file {gt_file}.")
+                else:
+                    print(f"Warning: Prediction file not found for {gt_file}.")
+            except Exception as e:
+                print(f"Error processing file {gt_file}: {e}")
+
+    with open(output_csv, mode="w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Filename", "Euclidean Distance Error (mm)"])
+        writer.writerows(results)
+    print(f"Results saved to {output_csv}")
+
+    mean_error = np.mean(errors_list) if errors_list else float("nan")
+    std_error = np.std(errors_list) if errors_list else float("nan")
+    return errors_list, mean_error, std_error
+
 
 def plot_distribution(data, title="Data Distribution"):
     """
@@ -54,76 +146,76 @@ def extract_prefix(string):
     return prefix
 
 
-def calculate_euclidean_distance(pred_label, gt_label, voxel_size):
-    """
-    This function calculates the center of mass for both the predicted and ground truth labels,
-    computes the Euclidean distance in voxel space, and then converts it to millimeters using
-    the provided voxel size.
-    Args:
-        pred_label (numpy.ndarray): Binary numpy array representing the predicted label.
-        gt_label (numpy.ndarray): Binary numpy array representing the ground truth label.
-        voxel_size (tuple of float): Voxel size in millimeters, given as (x, y, z) dimensions.
+# def calculate_euclidean_distance(pred_label, gt_label, voxel_size):
+#     """
+#     This function calculates the center of mass for both the predicted and ground truth labels,
+#     computes the Euclidean distance in voxel space, and then converts it to millimeters using
+#     the provided voxel size.
+#     Args:
+#         pred_label (numpy.ndarray): Binary numpy array representing the predicted label.
+#         gt_label (numpy.ndarray): Binary numpy array representing the ground truth label.
+#         voxel_size (tuple of float): Voxel size in millimeters, given as (x, y, z) dimensions.
 
-    Returns:
-        float: The Euclidean distance between the two centers of mass.
-    """
-    pred_center = center_of_mass(pred_label)
-    gt_center = center_of_mass(gt_label)
-    distance_voxels = np.linalg.norm(np.array(pred_center) - np.array(gt_center))
-    distance_mm = distance_voxels * np.array(voxel_size)
+#     Returns:
+#         float: The Euclidean distance between the two centers of mass.
+#     """
+#     pred_center = center_of_mass(pred_label)
+#     gt_center = center_of_mass(gt_label)
+#     distance_voxels = np.linalg.norm(np.array(pred_center) - np.array(gt_center))
+#     distance_mm = distance_voxels * np.array(voxel_size)
 
-    total_distance_mm = np.sqrt(np.sum(np.square(distance_mm)))  # to mm
+#     total_distance_mm = np.sqrt(np.sum(np.square(distance_mm)))  # to mm
 
-    return total_distance_mm
+#     return total_distance_mm
 
 
-def compute_distance_error_over_dataset(gt_dir, pred_dir, output_csv):
-    """
-    Computes the Dice coefficient for all NIfTI images in a dataset.
-    Args:
-        gt_dir (str): Directory containing ground truth NIfTI files.
-        pred_dir (str): Directory containing predicted NIfTI files.
-        output_csv (str, optional): Name of the output CSV file storing Dice scores.
-    Returns:
-        float: The mean Dice coefficient over the dataset.
-    """
+# def compute_distance_error_over_dataset(gt_dir, pred_dir, output_csv):
+#     """
+#     Computes the Dice coefficient for all NIfTI images in a dataset.
+#     Args:
+#         gt_dir (str): Directory containing ground truth NIfTI files.
+#         pred_dir (str): Directory containing predicted NIfTI files.
+#         output_csv (str, optional): Name of the output CSV file storing Dice scores.
+#     Returns:
+#         float: The mean Dice coefficient over the dataset.
+#     """
 
-    errors_list = []
-    # used to append information to csv file
-    results = []
-    # for every gile in gt dataset
-    for gt_file in os.listdir(gt_dir):
-        if gt_file.endswith(".nii.gz"):
-            gt_path = os.path.join(gt_dir, gt_file)
+#     errors_list = []
+#     # used to append information to csv file
+#     results = []
+#     # for every gile in gt dataset
+#     for gt_file in os.listdir(gt_dir):
+#         if gt_file.endswith(".nii.gz"):
+#             gt_path = os.path.join(gt_dir, gt_file)
 
-            # find coresponding prediction
-            prefix_number = extract_prefix(os.path.basename(gt_path))
-            pred_file = f"{prefix_number}_label.nii.gz"
-            pred_path = os.path.join(pred_dir, pred_file)
+#             # find coresponding prediction
+#             prefix_number = extract_prefix(os.path.basename(gt_path))
+#             pred_file = f"{prefix_number}_label.nii.gz"
+#             pred_path = os.path.join(pred_dir, pred_file)
 
-            if os.path.exists(pred_path):
-                # load images
-                gt_image = sitk.ReadImage(gt_path)
-                pred_image = sitk.ReadImage(pred_path)
-                voxel_size = gt_image.GetSpacing()
+#             if os.path.exists(pred_path):
+#                 # load images
+#                 gt_image = sitk.ReadImage(gt_path)
+#                 pred_image = sitk.ReadImage(pred_path)
+#                 voxel_size = gt_image.GetSpacing()
 
-                gt_array = sitk.GetArrayFromImage(gt_image) > 0
-                pred_array = sitk.GetArrayFromImage(pred_image) > 0
+#                 gt_array = sitk.GetArrayFromImage(gt_image) > 0
+#                 pred_array = sitk.GetArrayFromImage(pred_image) > 0
 
-                error = calculate_euclidean_distance(
-                    gt_array, pred_array, voxel_size=voxel_size
-                )
-                # append error
-                errors_list.append(error)
+#                 error = calculate_euclidean_distance(
+#                     gt_array, pred_array, voxel_size=voxel_size
+#                 )
+#                 # append error
+#                 errors_list.append(error)
 
-                results.append([gt_file, error])
-    # write to csv file, for debugging
-    with open(output_csv, mode="w", newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow(["Filename", "Euclidean Distance Error (mm)"])
-        writer.writerows(results)
+#                 results.append([gt_file, error])
+#     # write to csv file, for debugging
+#     with open(output_csv, mode="w", newline="") as f:
+#         writer = csv.writer(f)
+#         writer.writerow(["Filename", "Euclidean Distance Error (mm)"])
+#         writer.writerows(results)
 
-    return errors_list, np.mean(errors_list), np.std(errors_list)
+#     return errors_list, np.mean(errors_list), np.std(errors_list)
 
 
 if __name__ == "__main__":
