@@ -37,13 +37,26 @@ can either register images individually (useful for testing) or process the enti
 dataset. This implementation is the [Introduction to Registration - SimpleITK](https://insightsoftwareconsortium.github.io/SimpleITK-Notebooks/Python_html/60_Registration_Introduction.html)
  methodology, where you can find more detailed explanations. 
 Input data for registration are output data of the previous step - clipped CT images.  
-Registration will create three different directories: images (contains registered images) transformations (contains transformations used for the registration) & subtractions (contains images where preoperative image is subtracted from registered image).
+Registration will create two different directories: images (contains registered images) and transformations (contains transformations used for the registration).
 
-To cut the skull, run:
+The skull preprocessing step involves removal of hematoma by thresholding (for both registered and preoperative images), subtraction of registered and preoperative image wihtout  hematoma (outputs of previous step) and cut of lower parts of the skull. To remove hematoma, run:
+```bash
+cd burr_hole_localization_pipeline/skull_preprocessing
+python3 hematoma_removal.py [--help] --input_dir INPUT_DIR_PATH 
+--output_dir OUTPUT_DIR_PATH --threshold HU_THRESHOLD_VALUE
+```
+To subtract the pairs of images, run:
+```bash
+cd burr_hole_localization_pipeline/skull_preprocessing
+python3 subtraction.py [--help] --input_dir_registered INPUT_REG_DIR_PATH 
+--input_dir_preop INPUT_PREOP_DIR_PATH 
+--output_dir OUTPUT_DIR_SUBTRACTED_PATH s
+```
+To cut the lower parts of the skull, run:
 ```bash
 cd burr_hole_localization_pipeline/skull_preprocessing
 python3 cut_skull.py [--help] --input_dir INPUT_DIR_PATH 
---output_dir OUTPUT_DIR_PATH --min_clip -MIN_HU_VALUE --max_clip MAX_HU_VALUE
+--output_dir OUTPUT_DIR_PATH --cutoff CUTTOFF_VALUE
 ```
 Skull cutting is applied to subtracted images from the registration.  
 
