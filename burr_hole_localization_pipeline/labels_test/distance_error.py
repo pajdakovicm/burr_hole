@@ -211,7 +211,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # Call the function with parsed arguments
+    # call the function with parsed arguments
     errors_list, median_error, iqr_error = compute_distance_error_over_dataset(
         args.gt_dir, args.pred_dir, args.output_csv
     )
@@ -220,5 +220,6 @@ if __name__ == "__main__":
     print(f"Interquartile Range (IQR) of Euclidean Distance Error: {iqr_error} mm")
 
     print(f"Errors for each image are saved in: {args.output_csv}")
-    plot_distribution_median(errors_list)
-    plot_distribution_mean(errors_list)
+    # uncomment if you want to plot the distribution of errors
+    # plot_distribution_median(errors_list)
+    # plot_distribution_mean(errors_list)
