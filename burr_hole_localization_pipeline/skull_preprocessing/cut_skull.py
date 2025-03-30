@@ -75,7 +75,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--input_dir",
         required=True,
-        help="Path to input directory containing .nii.gz files. Input directory should be the directory with images subtracted after the registartion.",
+        help="Input directory should be the directory with images subtracted.",
     )
     parser.add_argument(
         "--output_dir",
@@ -86,7 +86,7 @@ if __name__ == "__main__":
         "--cutoff",
         type=float,
         required=True,
-        help="Fraction (0 to 1) of slices to be removed from the bottom.",
+        help="Fraction (0 to 1) of slices to be removed from the bottom (z-axis).",
     )
 
     args = parser.parse_args()
