@@ -152,5 +152,5 @@ if __name__ == "__main__":
     # label_dir = "/Users/marijapajdakovic/Desktop/burr_hole_project/data/gt_labels"
 
     # check HU values of chosen template blob used in template matching
-    hole_region_path = "/Users/marijapajdakovic/Desktop/burr_hole_project/results/templates/18_template.nii.gz"
+    hole_region_path = "/Users/marijapajdakovic/Desktop/burr_hole_project/results/templates_resampled/458_subtracted_cropped.nii.gz"
     check_hole_hu_values(image_path=hole_region_path)
