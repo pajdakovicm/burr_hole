@@ -58,7 +58,7 @@ cd burr_hole_localization_pipeline/skull_preprocessing
 python3 cut_skull.py [--help] --input_dir INPUT_DIR_PATH 
 --output_dir OUTPUT_DIR_PATH --cutoff CUTTOFF_VALUE
 ```
-Skull cutting is applied to subtracted images from the registration.  
+Skull cutting is applied to subtracted images.
 
 To resample the dataset, run:
 ```bash
