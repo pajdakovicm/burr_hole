@@ -121,7 +121,7 @@ def compute_labels_upper_percentage_dataset(image_dir, label_dir):
 
 def check_hole_hu_values(image_path):
     """
-    Computes the HU values within the burr hole region (blob) in a subtracted image (template in temolate matching).
+    Computes the HU values within the burr hole region (blob) in a subtracted image (template in template matching).
     Args:
         image_path (str): Path to the subtracted NIfTI image.
         hole_mask_path (str): Path to the binary mask of the burr hole region.
@@ -129,10 +129,8 @@ def check_hole_hu_values(image_path):
     Returns:
         None
     """
-    # Load the subtracted image (contains HU values)
     image = nib.load(image_path)
     image_data = image.get_fdata()
-    # Print statistics
     print(f"Total hole voxels: {image_data.size}")
     print(f"Min HU in hole: {np.min(image_data)}")
     print(f"Max HU in hole: {np.max(image_data)}")
