@@ -35,31 +35,18 @@ def plot_area_distribution(csv_path, column_name="area"):
     """
     # load the dataset
     df = pd.read_csv(csv_path)
-    # compute mean and standard deviation
-    mean_value = df[column_name].mean()
-    std_value = df[column_name].std()
+    # compute median
+    median_value = df[column_name].median()
 
     plt.figure(figsize=(8, 5))
     plt.hist(df[column_name], bins=20, edgecolor="black", alpha=0.7)
-    plt.axvline(mean_value, color="red", linestyle="dashed", linewidth=2, label="Mean")
     plt.axvline(
-        mean_value + std_value,
-        color="blue",
-        linestyle="dashed",
-        linewidth=2,
-        label="Mean + 1 Std",
-    )
-    plt.axvline(
-        mean_value - std_value,
-        color="blue",
-        linestyle="dashed",
-        linewidth=2,
-        label="Mean - 1 Std",
+        median_value, color="red", linestyle="dashed", linewidth=2, label="Median"
     )
     # labels and title
-    plt.xlabel("Volume")
+    plt.xlabel("Volume [voxels]")
     plt.ylabel("Frequency")
-    plt.title(f"Distribution of Volume Across Ground Truth Lables.")
+    plt.title(f"Distribution of Blob Volumes Across Ground Truth Labels.")
     plt.legend()
     plt.grid(axis="y", linestyle="--", alpha=0.6)
     plt.show()
@@ -151,4 +138,4 @@ if __name__ == "__main__":
 
     # check HU values of chosen template blob used in template matching
     hole_region_path = "/Users/marijapajdakovic/Desktop/burr_hole_project/results/templates_resampled/458_subtracted_cropped.nii.gz"
-    check_hole_hu_values(image_path=hole_region_path)
+#   check_hole_hu_values(image_path=hole_region_path)
