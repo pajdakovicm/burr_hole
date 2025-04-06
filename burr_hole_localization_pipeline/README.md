@@ -103,3 +103,4 @@ python3 distance_error.py [—help] —gt_dir GT_DIR_PATH
 This directory contains *gt_labels_analysis.py* script which served mainly for visualisations and analysis of ground truth labels. 
 Besides, script *gt_to_preop_space.py* applies registration to ground truth labels, since they are in the space of postoperative images. Resampling of GT labels is applied after this step. 
 
+To statistically compare if there is a siginificant difference between errors obtained from GT dataset 1 and GT dataset 2. In file *statistical analysis.py* you can set the paths and perform evaluation.  

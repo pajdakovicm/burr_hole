@@ -40,6 +40,7 @@ def statistical_evaluation(gt_1_file_path, gt_2_file_path):
 
 
 if __name__ == "__main__":
+    # file paths to ground truth labels 1 and 2
     gt_1 = "/Users/marijapajdakovic/Desktop/burr_hole_project/results/csv_files/distance_error_0.8.csv"
     gt_2 = "/Users/marijapajdakovic/Desktop/burr_hole_project/results/csv_files/distance_error_0.8_gt2.csv"
     statistical_evaluation(gt_1_file_path=gt_1, gt_2_file_path=gt_2)
