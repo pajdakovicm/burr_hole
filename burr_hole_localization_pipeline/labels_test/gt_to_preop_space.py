@@ -24,6 +24,7 @@ def gt_to_preop_dataset(
     Returns:
         None
     """
+    os.makedirs(output_dir, exist_ok=True)
     for gt_file in os.listdir(gt_labels_dir):
         if gt_file.endswith(".nii.gz"):
             prefix = extract_prefix(gt_file)
