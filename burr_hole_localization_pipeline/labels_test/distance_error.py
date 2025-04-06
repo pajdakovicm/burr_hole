@@ -221,5 +221,5 @@ if __name__ == "__main__":
 
     print(f"Errors for each image are saved in: {args.output_csv}")
     # uncomment if you want to plot the distribution of errors
-    # plot_distribution_median(errors_list)
+    plot_distribution_median(errors_list)
     # plot_distribution_mean(errors_list)
