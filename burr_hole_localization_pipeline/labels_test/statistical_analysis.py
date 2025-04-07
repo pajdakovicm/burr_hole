@@ -22,7 +22,7 @@ def statistical_evaluation(gt_1_file_path, gt_2_file_path):
 
     # check normality
     stat, p_normal = shapiro(merged["diff"])
-    print(f"Shapiro-Wilk p = {p_normal:.4f}")
+    print(f"Shapiro-Wilk p = {p_normal:.4f}, W={stat:.4f}")
 
     # choose appropriate test
     if p_normal > 0.05:
