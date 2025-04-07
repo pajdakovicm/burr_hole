@@ -218,7 +218,8 @@ if __name__ == "__main__":
 
     print(f"Median Euclidean Distance Error: {median_error} mm")
     print(f"Interquartile Range (IQR) of Euclidean Distance Error: {iqr_error} mm")
-
+    print(f"Minimum value is : {min(errors_list)} mm.")
+    print(f"Maximum value is : {max(errors_list)} mm.")
     print(f"Errors for each image are saved in: {args.output_csv}")
     # uncomment if you want to plot the distribution of errors
     plot_distribution_median(errors_list)
