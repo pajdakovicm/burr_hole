@@ -94,8 +94,8 @@ def compute_distance_error_over_dataset(gt_dir, pred_dir, output_csv):
         writer.writerows(results)
     print(f"Results saved to {output_csv}")
 
-    # mean_error = np.mean(errors_list) if errors_list else float("nan")
-    # std_error = np.std(errors_list) if errors_list else float("nan")
+    mean_error = np.mean(errors_list) if errors_list else float("nan")
+    std_error = np.std(errors_list) if errors_list else float("nan")
     # return errors_list, mean_error, std_error
     median_error = np.median(errors_list) if errors_list else float("nan")
     iqr_error = (
@@ -103,7 +103,7 @@ def compute_distance_error_over_dataset(gt_dir, pred_dir, output_csv):
         if errors_list
         else float("nan")
     )
-    return errors_list, median_error, iqr_error
+    return errors_list, median_error, iqr_error, mean_error, std_error
 
 
 # plot mean and std
@@ -212,15 +212,17 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # call the function with parsed arguments
-    errors_list, median_error, iqr_error = compute_distance_error_over_dataset(
-        args.gt_dir, args.pred_dir, args.output_csv
+    errors_list, median_error, iqr_error, mean_error, std_error = (
+        compute_distance_error_over_dataset(args.gt_dir, args.pred_dir, args.output_csv)
     )
 
     print(f"Median Euclidean Distance Error: {median_error} mm")
     print(f"Interquartile Range (IQR) of Euclidean Distance Error: {iqr_error} mm")
+    print(f"Mean Euclidean Distance Error: {mean_error} mm")
+    print(f"STD of Euclidean Distance Error: {std_error} mm")
     print(f"Minimum value is : {min(errors_list)} mm.")
     print(f"Maximum value is : {max(errors_list)} mm.")
     print(f"Errors for each image are saved in: {args.output_csv}")
     # uncomment if you want to plot the distribution of errors
     plot_distribution_median(errors_list)
-    # plot_distribution_mean(errors_list)
+    plot_distribution_mean(errors_list)
