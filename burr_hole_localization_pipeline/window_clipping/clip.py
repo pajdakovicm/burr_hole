@@ -106,6 +106,7 @@ def process_dataset(input_dir, output_dir, min_clip=-200, max_clip=1000):
     os.makedirs(output_dir, exist_ok=True)
 
     for preop_data, postop_data in tqdm(zip(preop, postop), desc="Processing CT Scans"):
+        # for preop_data in tqdm(preop, desc="Processing Preop CT Scans"):
 
         if not os.path.exists(preop_data) or not os.path.exists(postop_data):
             print(f"Skipping: Missing file(s) for {preop_data} or {postop_data}")
