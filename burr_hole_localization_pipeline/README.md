@@ -2,8 +2,8 @@
 
 This document describes the pipeline for trepanation site localization using pairs of preoperative and postoperative CT scans. The pipeline consists of the following steps:
 1. Window clipping of both preoperative and postoperative CT scans.
+2. Image registration. 
 2. Skull preprocessing.
-3. Image registration. 
 4. Dataset resampling.
 5. Application of Anisotropic Diffusion filter.
 6. Template matching.
