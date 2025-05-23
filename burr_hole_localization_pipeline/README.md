@@ -3,10 +3,11 @@
 This document describes the pipeline for trepanation site localization using pairs of preoperative and postoperative CT scans. The pipeline consists of the following steps:
 1. Window clipping of both preoperative and postoperative CT scans.
 2. Skull preprocessing.
-3. Dataset resampling.
-4. Application of Anisotropic Diffusion filter.
-5. Template matching.
-6. Region properties analysis. 
+3. Image registration. 
+4. Dataset resampling.
+5. Application of Anisotropic Diffusion filter.
+6. Template matching.
+7. Region properties analysis. 
 
 ## Installation
 
@@ -50,7 +51,7 @@ To subtract the pairs of images, run:
 cd burr_hole_localization_pipeline/skull_preprocessing
 python3 subtraction.py [--help] --input_dir_registered INPUT_REG_DIR_PATH 
 --input_dir_preop INPUT_PREOP_DIR_PATH 
---output_dir OUTPUT_DIR_SUBTRACTED_PATH s
+--output_dir OUTPUT_DIR_SUBTRACTED_PATH 
 ```
 To cut the lower parts of the skull, run:
 ```bash
@@ -63,13 +64,13 @@ Skull cutting is applied to subtracted images.
 To resample the dataset, run:
 ```bash
 cd burr_hole_localization_pipeline/resample
-python3 resample_ds.py [--help] -input_dir INPUT_DIR_PATH 
+python3 resample_ds.py [--help] --input_dir INPUT_DIR_PATH 
 --output_dir OUTPUT_DIR_PATH --spacing x_axis y_axis z_axis  
  --interpolator INTERPOLATOR_TYPE
 ```
 Resampling is applied after skull cutting, for efficiency.
 
-To filter the data, run:
+To apply Anisotropic Diffusion filter, run:
 ```bash
 cd burr_hole_localization_pipeline/blob_extraction
 python3 filtering.py [--help] --input_dir INPUT_DIR_PATH —output_dir OUTPUT_DIR_PATH
@@ -77,12 +78,10 @@ python3 filtering.py [--help] --input_dir INPUT_DIR_PATH —output_dir OUTPUT_DI
 ```
 To extract the blob with the template matching technique, run:
 ```bash
-cd burr_hole_localization_pipeline/blob_ext  
-raction
-
+cd burr_hole_localization_pipeline/blob_extraction
 python3 template_matching.py [--help] --input_dir INPUT_DIR_PATH
- —output_dir OUTPUT_DIR_PATH —trehshold THRESHOLD_VALUE
-```
+ —output_dir OUTPUT_DIR_PATH —-trehshold THRESHOLD_VALUE --template TEMPLATE_PATH
+ ```
 To exclude false positives, apply region properties and run:
 ```bash
 cd burr_hole_localization_pipeline/blob_extraction
