@@ -80,6 +80,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
     subtract_images(
         input_dir_preop=args.input_dir_preop,
-        input_dir_registered=args.input_dir,
-        output_dir=args.output_dir_subtracted,
+        input_dir_registered=args.input_dir_registered,
+        output_dir=args.output_dir,
     )

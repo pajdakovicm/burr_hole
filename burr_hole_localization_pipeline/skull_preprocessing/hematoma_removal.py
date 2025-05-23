@@ -64,5 +64,5 @@ if __name__ == "__main__":
     clear_skull(
         input_dir=args.input_dir,
         threshold=args.threshold,
-        output_dir=args.output_dir_no_hematoma,
+        output_dir=args.output_dir,
     )
